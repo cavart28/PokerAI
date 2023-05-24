@@ -23,6 +23,9 @@ class Round():
     def __init__(self, n_players):
         self.n_players = n_players
         self.shuffled_deck = ShuffledDeck()
+        self.flop_ = False
+        self.turn_ = False
+        self.river_ = False
     
     @cached_property
     def dealt_hands(self):
@@ -30,14 +33,19 @@ class Round():
     
     @cached_property
     def flop(self):
+        self.flop_ = True
         return self.shuffled_deck.deal(3)
     
     @cached_property
     def turn(self):
+        assert self.flop_, "The flop has not yet been dealt"
+        self.turn_ = True
         return self.shuffled_deck.deal(1)
     
     @cached_property
     def river(self):
+        assert self.turn_, "The turn has not yet been dealt"
+        self.river_ = True
         return self.shuffled_deck.deal(1)
     
     @cached_property
