@@ -43,15 +43,15 @@ def detect_flush(suit_to_numbers, min_length=5, max_length=7):
     [('D', 2), ('D', 4), ('D', 8), ('D', 12), ('D', 13), ('D', 14)]
 
 
-    >>> suit_to_numbers = {'D': [14, 4, 8, 13, 2, 12, 10, 3], max_length=5}
-    >>> flush = detect_flush(suit_to_numbers)
+    >>> suit_to_numbers = {'D': [14, 4, 8, 13, 2, 12, 10, 3]}
+    >>> flush = detect_flush(suit_to_numbers, max_length=5)
     >>> flush
     [('D', 8), ('D', 10), ('D', 12), ('D', 13), ('D', 14)]
 
     Note that the function does not necessarily return the flush in the common sense of the word.
 
     >>> len(flush)
-    6
+    5
 
     """
     for suit, cards in suit_to_numbers.items():
@@ -260,7 +260,7 @@ def detect_pair(number_to_suits):
     >>> hand = [('D', 14), ('D', 10), ('H', 14), ('S', 2), ('D', 11), ('C', 9), ('S', 7)]
     >>> suit_to_numbers, number_to_suits = suit_to_numbers_number_to_suits(hand)
     >>> detect_pair(number_to_suits)
-    [('D', 14), ('H', 14), ('C', 9), ('D', 10), ('D', 11)]
+    [('C', 9), ('D', 10), ('D', 11), ('D', 14), ('H', 14)]
     """
 
     pairs = []
@@ -339,3 +339,69 @@ def best_five(hand):
             return ('highest_cards', detect_highest_five(hand))
         
         
+def is_better(best_hand_1, best_hand_2):
+
+    """
+    >>> best_hand_1 = ('full_house', [('S', 10), ('C', 10), ('D', 10), ('S', 13), ('C', 13)])
+    >>> best_hand_2 = ('full_house', [('S', 10), ('C', 10), ('D', 13), ('S', 13), ('C', 13)])
+    >>> is_better(best_hand_1, best_hand_2)
+    -1
+
+
+    >>> best_hand_1 = ('straight', [('S', 10), ('C', 11), ('D', 12), ('S', 13), ('C', 14)])
+    >>> best_hand_2 = ('pair', [('S', 10), ('C', 10), ('D', 8), ('S', 11), ('C', 14)])
+    >>> is_better(best_hand_1, best_hand_2)
+    1
+
+    >>> hand_1 = ('straight', [('S', 10), ('C', 11), ('D', 12), ('S', 13), ('C', 14)])
+    >>> hand_2 = ('straight', [('S', 9), ('S', 10), ('C', 11), ('D', 12), ('S', 13)])
+    >>> is_better(hand_1, hand_2)
+    1
+
+    >>> hand_1 = ('straight', [('S', 10), ('C', 11), ('D', 12), ('S', 13), ('C', 14)])
+    >>> hand_2 = hand_1
+    >>> is_better(hand_1, hand_2)
+    0
+
+    >>> hand_1 = ('highest_cards', [('S', 2), ('C', 11), ('D', 12), ('S', 13), ('C', 14)])
+    >>> hand_2 = ('highest_cards', [('H', 2), ('S', 11), ('S', 12), ('S', 13), ('C', 14)])
+    >>> is_better(hand_1, hand_2)
+    0
+    """
+
+    ranking = {'highest_cards': 0, 'pair': 1, 'two_pairs': 2, 'three_of_a_kind': 3, 'straight': 4,
+               'flush': 5, 'full_house': 6, 'four_of_a_kind': 7, 'straight_flush': 8}
+    
+    same_hand = best_hand_1 == best_hand_2
+    if same_hand:
+        return 0
+    
+    same_type = ranking[best_hand_1[0]] == ranking[best_hand_2[0]]
+    if same_type:
+        numbers_1 = [card[1] for card in best_hand_1[1]]
+        numbers_2 = [card[1] for card in best_hand_2[1]]
+
+        if numbers_1 == numbers_2:
+            return 0
+        else:
+            win =  numbers_1[::-1] > numbers_2[::-1]
+
+    else:
+        win = ranking[best_hand_1[0]] > ranking[best_hand_2[0]]
+
+
+    if win:
+        return 1
+    else:
+        return -1
+    
+
+    
+
+        
+   
+
+  
+        
+
+
