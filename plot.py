@@ -18,6 +18,11 @@ def make_image_dict(pic_folder=pic_folder):
         image_dict[card] = mpimg.imread(img_loc)
     return image_dict
 
+
+def plot_image(image):
+    plt.imshow(image.astype('uint8'))
+
+    
 image_dict = make_image_dict()
 
 def plot_hand(hand):

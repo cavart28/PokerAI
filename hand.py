@@ -297,7 +297,7 @@ def best_five(hand):
         # the only higher hand that can occur when a flush is present is a straight flush
         straight_flush = detect_straight(flush)
         if straight_flush is not None:
-            # return the last 5 best cards
+            # return the last 5 highest cards
             return ('straight_flush', straight_flush[-5:])
         
         return ('flush', flush)
@@ -342,6 +342,9 @@ def best_five(hand):
 def is_better(best_hand_1, best_hand_2):
 
     """
+
+    Return 1 if best_hand_1 is better than best_hand_2, 0 if they are equally good and -1 otherwise.
+    
     >>> best_hand_1 = ('full_house', [('S', 10), ('C', 10), ('D', 10), ('S', 13), ('C', 13)])
     >>> best_hand_2 = ('full_house', [('S', 10), ('C', 10), ('D', 13), ('S', 13), ('C', 13)])
     >>> is_better(best_hand_1, best_hand_2)

@@ -1,11 +1,32 @@
 from itertools import product
 from functools import cached_property
+from collections import Counter, defaultdict
 import numpy as np
 from PokerAI.hand import best_five, is_better
 
 suits = ['S', 'H', 'D', 'C']
 faces = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 faces_values = [i for i in range(2, 15)]
+
+def my_hand_wins(results):
+    if -1 in results:
+        return -1
+    elif np.sum(results) == 0:
+        return 0
+    else:
+        return 1
+
+
+def get_raw_proba_of_winning(my_hand, n_players, n_runs=100):
+    loss_draw_win = []
+    round = Round(n_players=n_players)
+    for i in range(n_runs):
+        round = Round(n_players=n_players)
+        best_hands, results = round.simulate_blindly(my_hand=my_hand)
+        loss_draw_win.append(my_hand_wins(results))
+    c = Counter(loss_draw_win)
+    p = {k: v / n_runs for k, v in c.items()}
+    return defaultdict(int, p)
 
 
 class ShuffledDeck:
@@ -82,6 +103,10 @@ class Round():
             win.append(is_better(own_best_five_hand, hand))
         
         return ([own_best_five_hand] + others_best_hand, win)
+    
+
+
+
 
 
 
